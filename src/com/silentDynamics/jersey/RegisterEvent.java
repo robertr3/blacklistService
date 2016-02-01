@@ -20,12 +20,13 @@ public class RegisterEvent {
     // Query parameters are parameters: http://localhost/<appln-folder-name>/registerevent/doregisterevent?name=pqrs&username=abc&password=xyz
     public String doLogin(@QueryParam("name") String name, @QueryParam("type") String type,
     		@QueryParam("topic1") String topic1, @QueryParam("timestart") String timestart,
-    		@QueryParam("location") String location, @QueryParam("privacy") String privacy, @QueryParam("username") String username){
+    		@QueryParam("location") String location, @QueryParam("privacy") String privacy,
+    		@QueryParam("username") String username, @QueryParam("cached") String cached){
         String response = "";
         System.out.println("Inside doLogin "+name +" "+ timestart );
         //System.out.println("Inside doLogin "+uname+"  "+pwd);
         int retCode = registerEvent(name, type, topic1, timestart,
-        		location, privacy, username);
+        		location, privacy, username, cached);
         if(retCode == 0){
             response = Utility.constructJSON("registerEvent",true);
         }else if(retCode == 1){
@@ -40,13 +41,13 @@ public class RegisterEvent {
     }
  
     private int registerEvent(String name, String type, String topic1, String timestart,
-    		String location, String privacy, String username){
+    		String location, String privacy, String username, String cached){
         System.out.println("Inside registerEvent" + username);
         int result = 3;
         if(Utility.isNotNull(name) && Utility.isNotNull(type) && Utility.isNotNull(topic1) && Utility.isNotNull(location) && Utility.isNotNull(username)){
             try {
                 if(DBConnection.insertEvent(name, type, topic1, timestart,
-                		location, privacy, username)){
+                		location, privacy, username, cached)){
                     System.out.println("RegisterUSer if");
                     result = 0;
                 }

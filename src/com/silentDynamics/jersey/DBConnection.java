@@ -132,7 +132,7 @@ public class DBConnection {
      * @throws Exception
      */
     public static boolean insertEvent(String name, String type, String topic1, String timestart,
-    		String location, String privacy, String username) throws SQLException, Exception {
+    		String location, String privacy, String username, String cached) throws SQLException, Exception {
         boolean insertStatus = false;
         Connection dbConn = null;
         try {
@@ -143,8 +143,8 @@ public class DBConnection {
                 e.printStackTrace();
             }
             Statement stmt = dbConn.createStatement();
-            String query = "INSERT into events(name, type, topic1, timestart, location, privacy, username) values('"+name+ "',"+"'"
-                    + type + "','" + topic1 + "','" + timestart + "','" +  location + "','" + privacy + "','" + username + "')";
+            String query = "INSERT into events(name, type, topic1, timestart, location, privacy, username, cached) values('"+name+ "',"+"'"
+                    + type + "','" + topic1 + "','" + timestart + "','" +  location + "','" + privacy + "','" + username + "','" + cached + "')";
             //System.out.println(query);
             int records = stmt.executeUpdate(query);
             //System.out.println(records);
@@ -199,13 +199,13 @@ public class DBConnection {
                 System.out.println(query);
                 break;
             case "topic1" :
-                query = "SELECT row FROM events WHERE topic1 = " + value;
+                query = "SELECT * FROM events WHERE topic1 = '" + value + "'";
                 break;
             case "location" :
-                query = "SELECT row FROM events WHERE location = " + value;
+                query = "SELECT * FROM events WHERE location = '" + value + "'";
                 break;
             default:
-                query = "SELECT row FROM events WHERE timestart = " + value;
+                query = "SELECT * FROM events WHERE timestart = '" + value + "'";
                 break;
             }
             //System.out.println(query);
@@ -221,6 +221,7 @@ public class DBConnection {
             	map.put("location", rs.getString("location"));
             	map.put("privacy", rs.getString("privacy"));
             	map.put("username", rs.getString("username"));
+            	map.put("cached", rs.getString("cached"));
             }
             response = Utility.constructJSON("getEvent", true, wordList);
             //System.out.println(records);
