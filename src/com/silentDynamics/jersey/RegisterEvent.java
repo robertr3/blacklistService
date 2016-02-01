@@ -19,11 +19,12 @@ public class RegisterEvent {
     @Produces(MediaType.APPLICATION_JSON) 
     // Query parameters are parameters: http://localhost/<appln-folder-name>/registerevent/doregisterevent?name=pqrs&username=abc&password=xyz
     public String doLogin(@QueryParam("name") String name, @QueryParam("type") String type,
-    		@QueryParam("topic1") String topic1, @QueryParam("timeStart") Date timeStart, @QueryParam("timeEnd") Date timeEnd,
-    		@QueryParam("location") String location, @QueryParam("privacy") Boolean privacy, @QueryParam("username") String username){
+    		@QueryParam("topic1") String topic1, @QueryParam("timestart") String timestart,
+    		@QueryParam("location") String location, @QueryParam("privacy") String privacy, @QueryParam("username") String username){
         String response = "";
+        System.out.println("Inside doLogin "+name +" "+ timestart );
         //System.out.println("Inside doLogin "+uname+"  "+pwd);
-        int retCode = registerEvent(name, type, topic1, timeStart, timeEnd,
+        int retCode = registerEvent(name, type, topic1, timestart,
         		location, privacy, username);
         if(retCode == 0){
             response = Utility.constructJSON("registerEvent",true);
@@ -38,19 +39,19 @@ public class RegisterEvent {
  
     }
  
-    private int registerEvent(String name, String type, String topic1, Date timeStart, Date timeEnd,
-    		String location, Boolean privacy, String username){
-        System.out.println("Inside registerEvent");
+    private int registerEvent(String name, String type, String topic1, String timestart,
+    		String location, String privacy, String username){
+        System.out.println("Inside registerEvent" + username);
         int result = 3;
-        if(Utility.isNotNull(name) && Utility.isNotNull(type) && Utility.isNotNull(topic1) && Utility.isNotNull(timeStart) && Utility.isNotNull(location) && Utility.isNotNull(username)){
+        if(Utility.isNotNull(name) && Utility.isNotNull(type) && Utility.isNotNull(topic1) && Utility.isNotNull(location) && Utility.isNotNull(username)){
             try {
-                if(DBConnection.insertEvent(name, type, topic1, timeStart, timeEnd,
+                if(DBConnection.insertEvent(name, type, topic1, timestart,
                 		location, privacy, username)){
                     System.out.println("RegisterUSer if");
                     result = 0;
                 }
             } catch(SQLException sqle){
-                System.out.println("RegisterUSer catch sqle");
+                System.out.println("RegisterUSer catch sqle" + sqle);
                 //When Primary key violation occurs that means user is already registered
                 if(sqle.getErrorCode() == 1062){
                     result = 1;
